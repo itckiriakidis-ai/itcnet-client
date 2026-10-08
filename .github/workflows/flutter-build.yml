@@ -1009,8 +1009,11 @@ jobs:
       - name: Rename rustdesk
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          for name in rustdesk*??.dmg; do
-              mv "$name" "${name%%.dmg}-${{ matrix.job.arch }}.dmg"
+          for name in itcnet*.dmg; do
+              case "$name" in
+                *-${{ matrix.job.arch }}.dmg) ;;
+                *) mv "$name" "${name%%.dmg}-${{ matrix.job.arch }}.dmg" ;;
+              esac
           done
 
       - name: Publish DMG package
@@ -1020,7 +1023,7 @@ jobs:
           prerelease: true
           tag_name: ${{ env.TAG_NAME }}
           files: |
-            rustdesk*-${{ matrix.job.arch }}.dmg
+            itcnet*-${{ matrix.job.arch }}.dmg
 
   publish_unsigned:
     needs:
